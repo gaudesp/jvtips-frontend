@@ -1,15 +1,24 @@
 <template>
-  <div>
-    <div v-for="user in users" :key="user.id">
-      <h3>{{ user.email }}</h3>
-      <p>{{ user.id }}</p>
-      <router-link :to="`/users/${user.id}`">Voir Détails</router-link>
-    </div>
-  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="user in users" :key="user.id">
+        <th scope="row">{{ user.id }}</th>
+        <td>{{ user.email }}</td>
+        <td><router-link :to="`/users/${user.id}`">Voir Détails</router-link></td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script setup lang="ts">
-import type { UserSchema } from '@/user/models/UserSchema';
+import type { User } from '@/user/schemas/UserSchema';
 
-const props = defineProps<{ users: UserSchema[] }>();
+const props = defineProps<{ users: User[] }>();
 </script>

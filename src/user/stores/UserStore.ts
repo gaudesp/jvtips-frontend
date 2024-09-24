@@ -1,16 +1,18 @@
 import { defineStore } from 'pinia';
 import { fetchUsers, fetchUserById, fetchUserGuides } from '@/user/services/UserService';
-import type { User, Users, UserGuide } from '@/user/schemas/UserSchema';
+import type { User, Users, UserGuides } from '@/user/schemas/UserSchema';
+import type { Guide } from '@/guide/schemas/GuideSchema';
 import type { Params } from '@/core/schemas/PaginationSchema';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    users: [] as User[] | null,
+    users: [] as User[] | [],
     totalItems: 0,
     totalPages: 0,
     currentPage: 1,
     pageSize: 5,
     user: null as User | null,
+    guides: [] as Guide[] | [],
   }),
   actions: {
     async loadUsers(params: Params) {
@@ -20,17 +22,17 @@ export const useUserStore = defineStore('user', {
       this.totalPages = users.total_pages;
       this.currentPage = users.current_page;
     },
-    async loadUserById(id: string) {
+    async loadUserById(id: string | string[]) {
       const user: User = await fetchUserById(id);
       this.user = user;
     },
-    async loadUserGuides(userId: number, params: Params) {
-      const user: UserGuides = await fetchUserGuides(userId, params);
-      this.user = user;
-      this.user.guides = user.guides.items;
-      this.totalItems = user.guides.total_items;
-      this.totalPages = user.guides.total_pages;
-      this.currentPage = user.guides.current_page;
+    async loadUserGuides(userId: string | string[], params: Params) {
+      const userGuides: UserGuides = await fetchUserGuides(userId, params);
+      this.user = userGuides;
+      this.guides = userGuides.guides.items;
+      this.totalItems = userGuides.guides.total_items;
+      this.totalPages = userGuides.guides.total_pages;
+      this.currentPage = userGuides.guides.current_page;
     },
   },
 });
