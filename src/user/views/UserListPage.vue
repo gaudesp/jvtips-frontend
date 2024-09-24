@@ -1,19 +1,22 @@
 <template>
-  <div>
-    <h1>User List</h1>
-    <Loader :loading="loaderStore.loading" />
-    <template v-if="!loaderStore.loading">
-      <template v-if="users && users.length">
-        <UserList :users="users" />
-        <div>
-          <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-          <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-        </div>
+  <div class="mt-4 container">
+    <div class="card">
+      <div class="card-body">
+        <Loader :loading="loaderStore.loading" />
+        <template v-if="!loaderStore.loading">
+        <template v-if="users && users.length">
+          <UserList :users="users" />
+          <div>
+            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+          </div>
+        </template>
+        <template v-else>
+          <span>Aucun utilisateur trouvé.</span>
+        </template>
       </template>
-      <template v-else>
-        <p>Aucun utilisateur trouvé.</p>
-      </template>
-    </template>
+      </div>
+    </div>
   </div>
 </template>
 
