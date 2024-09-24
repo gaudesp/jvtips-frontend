@@ -1,5 +1,5 @@
 import type { Paginated } from '@/core/schemas/PaginationSchema';
-import { Guides } from '@/guide/schemas/GuideSchema';
+import type { Guides } from '@/guide/schemas/GuideSchema';
 
 export interface UserBase {
   email: string;

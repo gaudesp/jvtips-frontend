@@ -12,12 +12,12 @@ export const fetchUsers = async (params: Params): Promise<Users> => {
   return response.data;
 };
 
-export const fetchUserById = async (userId: number): Promise<User> => {
+export const fetchUserById = async (userId: string | string[]): Promise<User> => {
   const response = await apiClient.get(`/users/${userId}`);
   return response.data;
 };
 
-export const fetchUserGuides = async (userId: number, params: Params): Promise<UserGuides> => {
+export const fetchUserGuides = async (userId: string | string[], params: Params): Promise<UserGuides> => {
   const response = await apiClient.get(`/users/${userId}/guides`, { params });
   return response.data;
 };

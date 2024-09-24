@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useLoaderStore = defineStore('loader', {
   state: () => ({
-    loading: false, // Initialisation de la propriété loading
+    loading: false,
   }),
   actions: {
     setLoading(isLoading: boolean) {

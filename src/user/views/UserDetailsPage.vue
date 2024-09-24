@@ -6,8 +6,8 @@
       <template v-if="user">
         <UserDetails :user="user" />
         <h2>Guides de l'utilisateur</h2>
-        <div v-if="user.guides.length">
-          <GuideList :guides="user.guides" />
+        <div v-if="guides.length">
+          <GuideList :guides="guides" />
         </div>
         <div v-else>
           <p>Aucun guide trouvé.</p>
@@ -37,6 +37,7 @@ const userStore = useUserStore();
 const loaderStore = useLoaderStore();
 
 const user = computed(() => userStore.user);
+const guides = computed(() => userStore.guides);
 const currentPage = computed(() => userStore.currentPage);
 const totalPages = computed(() => userStore.totalPages);
 const pageSize = computed(() => userStore.pageSize);
