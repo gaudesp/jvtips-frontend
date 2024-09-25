@@ -1,5 +1,6 @@
 import apiClient from '@/core/services/ApiService';
-import type { User, UserCreate, Users, UserGuides } from '@/user/schemas/UserSchema';
+import type { User, UserCreate, Users } from '@/user/schemas/UserSchema';
+import type { Guides } from '@/guide/schemas/GuideSchema';
 import type { Params } from '@/core/schemas/PaginationSchema';
 
 export const createUser = async (data: UserCreate): Promise<User> => {
@@ -17,7 +18,7 @@ export const fetchUserById = async (userId: string | string[]): Promise<User> =>
   return response.data;
 };
 
-export const fetchUserGuides = async (userId: string | string[], params: Params): Promise<UserGuides> => {
+export const fetchUserGuides = async (userId: string | string[], params: Params): Promise<Guides> => {
   const response = await apiClient.get(`/users/${userId}/guides`, { params });
   return response.data;
 };
