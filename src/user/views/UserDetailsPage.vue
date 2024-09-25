@@ -7,17 +7,16 @@
           <UserDetails :user="user" />
         </div>
       </template>
-      <router-link to="/users">Retour à la liste</router-link>
     </div>
-    <div class="card card-body" v-if="user">
+    <div class="card card-body">
       <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
       <template v-if="guides && guides.length">
         <div v-if="!loaderStore.isLoading('guidesLoader')">
           <GuideList :guides="guides" />
-          <Pagination :pagination-key="`user-guides-${route.params.id}`" />
         </div>
       </template>
     </div>
+    <Pagination :pagination-key="`user-guides-${route.params.id}`" v-if="guides && guides.length && !loaderStore.isLoading('guidesLoader')" />
   </div>
 </template>
 

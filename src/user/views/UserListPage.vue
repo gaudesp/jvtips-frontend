@@ -6,7 +6,6 @@
         <template v-if="!loaderStore.isLoading('usersLoader')">
           <template v-if="users && users.length">
             <UserList :users="users" />
-            <Pagination :pagination-key="'users'" />
           </template>
           <template v-else>
             <span>Aucun utilisateur trouvé.</span>
@@ -14,6 +13,7 @@
         </template>
       </div>
     </div>
+    <Pagination :pagination-key="'users'" v-if="users && users.length && !loaderStore.isLoading('usersLoader')" />
   </div>
 </template>
 

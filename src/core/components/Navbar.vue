@@ -30,3 +30,11 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const isUsersRoute = computed(() => route.path.startsWith('/users'));
 </script>
+<style>
+.navbar {
+  padding: 0!important;
+}
+.navbar .nav-link {
+  padding: 1rem;
+}
+</style>
