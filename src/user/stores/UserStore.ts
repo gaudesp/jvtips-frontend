@@ -46,5 +46,9 @@ export const useUserStore = defineStore('user', {
         params.size || paginationStore.getPagination(paginationKey).pageSize
       );
     },
+    clearUserData() {
+      this.user = null;
+      this.guides = [];
+    },
   },
 });

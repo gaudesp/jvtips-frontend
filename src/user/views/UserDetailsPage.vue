@@ -1,30 +1,28 @@
 <template>
   <div class="mt-4 container">
     <div class="card card-body mb-4">
+      <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
       <template v-if="user">
-        <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
         <div v-if="!loaderStore.isLoading('userLoader')">
           <UserDetails :user="user" />
         </div>
       </template>
-      <template v-else>L'utilisateur n'existe pas.</template>
       <router-link to="/users">Retour à la liste</router-link>
     </div>
     <div class="card card-body" v-if="user">
+      <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
       <template v-if="guides && guides.length">
-        <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
         <div v-if="!loaderStore.isLoading('guidesLoader')">
           <GuideList :guides="guides" />
           <Pagination :pagination-key="`user-guides-${route.params.id}`" />
         </div>
       </template>
-      <template v-else>L'utilisateur n'a pas créé de guide.</template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/user/stores/UserStore';
 import UserDetails from '@/user/components/UserDetails.vue';
@@ -53,6 +51,10 @@ const loadUserGuides = async () => {
 onMounted(async () => {
   await loadWithLoader(() => userStore.loadUserById(route.params.id), 'userLoader');
   await loadUserGuides();
+});
+
+onBeforeUnmount(() => {
+  userStore.clearUserData();
 });
 
 watch(currentPage, async () => {
