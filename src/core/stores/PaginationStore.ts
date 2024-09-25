@@ -9,7 +9,7 @@ export const usePaginationStore = defineStore('pagination', () => {
   };
 
   const getPagination = (key: string) => {
-    return paginations.value[key] || { currentPage: 1, totalPages: 1, pageSize: 10 };
+    return paginations.value[key] || { currentPage: 1, totalPages: 1, pageSize: 1 };
   };
 
   const nextPage = (key: string) => {

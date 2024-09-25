@@ -87,13 +87,3 @@ const goToPage = (page: number) => {
 const nextPage = () => paginationStore.nextPage(props.paginationKey);
 const prevPage = () => paginationStore.prevPage(props.paginationKey);
 </script>
-
-<style scoped>
-.page-link {
-  cursor: pointer;
-}
-.page-item.disabled .page-link {
-  pointer-events: none;
-  opacity: 0.5;
-}
-</style>
