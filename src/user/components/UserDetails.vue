@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
-import { UserSchema } from '@/user/models/UserSchema';
+import type { User } from '@/user/schemas/UserSchema';
 const props = defineProps<{
-  user: UserSchema;
+  user: User;
 }>();
 </script>
