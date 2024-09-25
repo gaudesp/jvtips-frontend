@@ -1,27 +1,25 @@
 <template>
-  <div>
-    <h1>Détails de l'utilisateur</h1>
-    <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
-    
-    <template v-if="!loaderStore.isLoading('userLoader')">
+  <div class="mt-4 container">
+    <div class="card card-body mb-4">
       <template v-if="user">
-        <UserDetails :user="user" />
-        <h2>Guides de l'utilisateur</h2>
-        
+        <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
+        <div v-if="!loaderStore.isLoading('userLoader')">
+          <UserDetails :user="user" />
+        </div>
+      </template>
+      <template v-else>L'utilisateur n'existe pas.</template>
+      <router-link to="/users">Retour à la liste</router-link>
+    </div>
+    <div class="card card-body" v-if="user">
+      <template v-if="guides && guides.length">
         <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
-        <div v-if="guides.length && !loaderStore.isLoading('guidesLoader')">
+        <div v-if="!loaderStore.isLoading('guidesLoader')">
           <GuideList :guides="guides" />
           <Pagination :pagination-key="`user-guides-${route.params.id}`" />
         </div>
-        <div v-else>
-          <p>Aucun guide trouvé.</p>
-        </div>
       </template>
-      <template v-else>
-        <p>Aucun utilisateur trouvé.</p>
-      </template>
-    </template>
-    <router-link to="/users">Retour à la liste</router-link>
+      <template v-else>L'utilisateur n'a pas créé de guide.</template>
+    </div>
   </div>
 </template>
 

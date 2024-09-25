@@ -2,9 +2,7 @@
   <div class="mt-4 container">
     <div class="card">
       <div class="card-body">
-        <!-- Loader spécifique pour le chargement des utilisateurs -->
         <Loader v-if="loaderStore.isLoading('usersLoader')" loaderKey="usersLoader" />
-
         <template v-if="!loaderStore.isLoading('usersLoader')">
           <template v-if="users && users.length">
             <UserList :users="users" />
@@ -37,22 +35,19 @@ const users = computed(() => userStore.users);
 const currentPage = computed(() => paginationStore.getPagination('users').currentPage);
 const pageSize = computed(() => paginationStore.getPagination('users').pageSize);
 
-// Charger les utilisateurs avec le loader spécifique
 const loadUsers = async () => {
   await loadWithLoader(async () => {
     await userStore.loadUsers({
       page: currentPage.value,
       size: pageSize.value
     });
-  }, 'usersLoader'); // Ajoutez la clé du loader ici
+  }, 'usersLoader');
 };
 
-// Charger les utilisateurs lors de la montée du composant
 onMounted(async () => {
   await loadUsers();
 });
 
-// Observer les changements de page pour recharger les utilisateurs
 watch(currentPage, async () => {
   await loadUsers();
 });
