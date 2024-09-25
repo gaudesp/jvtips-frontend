@@ -3,18 +3,17 @@
     <div class="card">
       <div class="card-body">
         <Loader :loading="loaderStore.loading" />
+
         <template v-if="!loaderStore.loading">
-        <template v-if="users && users.length">
-          <UserList :users="users" />
-          <div>
-            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-          </div>
+          <template v-if="users && users.length">
+            <UserList :users="users" />
+            <Pagination :pagination-key="'users'" />
+          </template>
+
+          <template v-else>
+            <span>Aucun utilisateur trouvé.</span>
+          </template>
         </template>
-        <template v-else>
-          <span>Aucun utilisateur trouvé.</span>
-        </template>
-      </template>
       </div>
     </div>
   </div>
@@ -22,33 +21,34 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/user/stores/UserStore';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import UserList from '@/user/components/UserList.vue';
 import Loader from '@/core/components/Loader.vue';
-import { loadWithLoader } from '@/core/helpers/LoadingHelper';
+import Pagination from '@/core/components/Pagination.vue';
 import { useLoaderStore } from '@/core/stores/LoaderStore';
+import { usePaginationStore } from '@/core/stores/PaginationStore';
+import { loadWithLoader } from '@/core/helpers/LoadingHelper';
 
 const userStore = useUserStore();
 const loaderStore = useLoaderStore();
+const paginationStore = usePaginationStore();
 
 const users = computed(() => userStore.users);
-const currentPage = computed(() => userStore.currentPage);
-const totalPages = computed(() => userStore.totalPages);
-const pageSize = computed(() => userStore.pageSize);
+const currentPage = computed(() => paginationStore.getPagination('users').currentPage);
+const pageSize = computed(() => paginationStore.getPagination('users').pageSize);
+
+const loadUsers = async () => {
+  await loadWithLoader(() => userStore.loadUsers({
+    page: currentPage.value,
+    size: pageSize.value
+  }));
+};
 
 onMounted(async () => {
-  await loadWithLoader(() => userStore.loadUsers({ page: currentPage.value, size: pageSize.value }));
+  await loadUsers();
 });
 
-const nextPage = async () => {
-  if (currentPage.value < totalPages.value) {
-    await loadWithLoader(() => userStore.loadUsers({ page: currentPage.value + 1, size: pageSize.value }));
-  }
-};
-
-const prevPage = async () => {
-  if (currentPage.value > 1) {
-    await loadWithLoader(() => userStore.loadUsers({ page: currentPage.value - 1, size: pageSize.value }));
-  }
-};
+watch(currentPage, async () => {
+  await loadUsers();
+});
 </script>

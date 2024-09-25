@@ -4,14 +4,17 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Email</th>
-        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="user in users" :key="user.id">
+      <tr
+        v-for="user in users"
+        :key="user.id"
+        @click="goToDetails(user.id)"
+        style="cursor: pointer;"
+      >
         <th scope="row">{{ user.id }}</th>
         <td>{{ user.email }}</td>
-        <td><router-link :to="`/users/${user.id}`">Voir Détails</router-link></td>
       </tr>
     </tbody>
   </table>
@@ -19,6 +22,13 @@
 
 <script setup lang="ts">
 import type { User } from '@/user/schemas/UserSchema';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const props = defineProps<{ users: User[] }>();
+
+const goToDetails = (userId: number) => {
+  router.push(`/users/${userId}`);
+};
 </script>
