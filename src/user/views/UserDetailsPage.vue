@@ -1,14 +1,16 @@
 <template>
   <div>
     <h1>Détails de l'utilisateur</h1>
-    <Loader :loading="loaderStore.loading" />
-    <template v-if="!loaderStore.loading">
-      <template v-if="userGuides">
-        <UserDetails :user="userGuides" />
+    <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
+    
+    <template v-if="!loaderStore.isLoading('userLoader')">
+      <template v-if="user">
+        <UserDetails :user="user" />
         <h2>Guides de l'utilisateur</h2>
         
-        <div v-if="guides.length">
-          <GuideList :guides="userGuides.guides.items" />
+        <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
+        <div v-if="guides.length && !loaderStore.isLoading('guidesLoader')">
+          <GuideList :guides="guides" />
           <Pagination :pagination-key="`user-guides-${route.params.id}`" />
         </div>
         <div v-else>
@@ -41,17 +43,21 @@ const userStore = useUserStore();
 const loaderStore = useLoaderStore();
 const paginationStore = usePaginationStore();
 
-const userGuides = computed(() => userStore.userGuides);
-const guides = computed(() => userStore.userGuides?.guides.items || []);
+const user = computed(() => userStore.user);
+const guides = computed(() => userStore.guides);
 const currentPage = computed(() => paginationStore.getPagination(`user-guides-${route.params.id}`).currentPage);
-const totalPages = computed(() => userStore.userGuides?.guides.total_pages || 1);
 const pageSize = computed(() => paginationStore.getPagination(`user-guides-${route.params.id}`).pageSize);
 
+const loadUserGuides = async () => {
+  await loadWithLoader(() => userStore.loadUserGuides(route.params.id, { page: currentPage.value, size: pageSize.value }), 'guidesLoader');
+};
+
 onMounted(async () => {
-  await loadWithLoader(() => userStore.loadUserGuides(route.params.id, { page: currentPage.value, size: pageSize.value }));
+  await loadWithLoader(() => userStore.loadUserById(route.params.id), 'userLoader');
+  await loadUserGuides();
 });
 
 watch(currentPage, async () => {
-  await loadWithLoader(() => userStore.loadUserGuides(route.params.id, { page: currentPage.value, size: pageSize.value }));
+  await loadUserGuides();
 });
 </script>

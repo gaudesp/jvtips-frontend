@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia';
 import { fetchUsers, fetchUserById, fetchUserGuides } from '@/user/services/UserService';
-import type { User, Users, UserGuides } from '@/user/schemas/UserSchema';
+import type { User, Users } from '@/user/schemas/UserSchema';
+import type { Guide, Guides } from '@/guide/schemas/GuideSchema';
 import type { Params } from '@/core/schemas/PaginationSchema';
 import { usePaginationStore } from '@/core/stores/PaginationStore';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    users: [] as User[] | [],
+    users: [] as User[],
     user: null as User | null,
-    userGuides: null as UserGuides | null,
+    guides: [] as Guide[],
   }),
   actions: {
     async loadUsers(params: Params) {
@@ -35,13 +36,13 @@ export const useUserStore = defineStore('user', {
       const paginationStore = usePaginationStore();
       const paginationKey = `user-guides-${userId}`;
 
-      const userGuides: UserGuides = await fetchUserGuides(userId, params);
-      this.userGuides = userGuides;
+      const guides: Guides = await fetchUserGuides(userId, params);
+      this.guides = guides.items;
 
       paginationStore.setPagination(
         paginationKey,
-        userGuides.guides.current_page,
-        userGuides.guides.total_pages,
+        guides.current_page,
+        guides.total_pages,
         params.size || paginationStore.getPagination(paginationKey).pageSize
       );
     },
