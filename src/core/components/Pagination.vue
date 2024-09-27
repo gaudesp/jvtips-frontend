@@ -1,28 +1,44 @@
 <template>
-  <nav class="mt-4" aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-      <li class="page-item" :class="{ disabled: currentPage === 1 }">
-        <button class="page-link" @click="prevPage" aria-label="Précédent">
-          <span aria-hidden="true">&laquo;</span>
+  <div class="mt-4 text-center">
+    <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Pagination navigation">
+      <div class="btn-group me-2" role="group" aria-label="Previous group">
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          :disabled="currentPage === 1" 
+          @click="prevPage" 
+          aria-label="Précédent"
+        >
+          &laquo;
         </button>
-      </li>
+      </div>
 
-      <li
-        v-for="page in visiblePages"
-        :key="page"
-        class="page-item"
-        :class="{ active: page === currentPage }"
-      >
-        <button class="page-link" @click="goToPage(page)">{{ page }}</button>
-      </li>
-
-      <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-        <button class="page-link" @click="nextPage" aria-label="Suivant">
-          <span aria-hidden="true">&raquo;</span>
+      <div class="btn-group" role="group" aria-label="Pages group">
+        <button
+          v-for="page in visiblePages"
+          :key="page"
+          type="button"
+          class="btn"
+          :class="{ 'btn-primary': page === currentPage, 'btn-secondary': page !== currentPage }"
+          @click="goToPage(page)"
+        >
+          {{ page }}
         </button>
-      </li>
-    </ul>
-  </nav>
+      </div>
+
+      <div class="btn-group ms-2" role="group" aria-label="Next group">
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          :disabled="currentPage === totalPages"
+          @click="nextPage"
+          aria-label="Suivant"
+        >
+          &raquo;
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

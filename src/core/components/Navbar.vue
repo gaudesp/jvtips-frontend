@@ -7,8 +7,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mx-auto">
-          <li class="nav-item"><router-link to="/" class="nav-link" active-class="active">Accueil</router-link></li>
-          <li class="nav-item"><router-link to="/users" class="nav-link" active-class="active">Membres</router-link></li>
+          <li class="nav-item">
+            <router-link to="/" class="nav-link" active-class="active">Accueil</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/users" class="nav-link" :class="{ active: isUsersRoute }">Membres</router-link>
+          </li>
         </ul>
         <form class="d-flex" data-bs-theme="light">
           <input class="form-control me-sm-2" type="search" placeholder="Search">
@@ -18,5 +22,19 @@
     </div>
   </nav>
 </template>
+
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const isUsersRoute = computed(() => route.path.startsWith('/users'));
 </script>
+<style>
+.navbar {
+  padding: 0!important;
+}
+.navbar .nav-link {
+  padding: 1rem;
+}
+</style>

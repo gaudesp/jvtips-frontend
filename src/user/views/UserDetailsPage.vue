@@ -1,32 +1,27 @@
 <template>
-  <div>
-    <h1>Détails de l'utilisateur</h1>
-    <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
-    
-    <template v-if="!loaderStore.isLoading('userLoader')">
+  <div class="mt-4 container">
+    <div class="card card-body mb-4">
+      <Loader v-if="loaderStore.isLoading('userLoader')" loaderKey="userLoader" />
       <template v-if="user">
-        <UserDetails :user="user" />
-        <h2>Guides de l'utilisateur</h2>
-        
-        <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
-        <div v-if="guides.length && !loaderStore.isLoading('guidesLoader')">
+        <div v-if="!loaderStore.isLoading('userLoader')">
+          <UserDetails :user="user" />
+        </div>
+      </template>
+    </div>
+    <div class="card card-body">
+      <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
+      <template v-if="guides && guides.length">
+        <div v-if="!loaderStore.isLoading('guidesLoader')">
           <GuideList :guides="guides" />
-          <Pagination :pagination-key="`user-guides-${route.params.id}`" />
-        </div>
-        <div v-else>
-          <p>Aucun guide trouvé.</p>
         </div>
       </template>
-      <template v-else>
-        <p>Aucun utilisateur trouvé.</p>
-      </template>
-    </template>
-    <router-link to="/users">Retour à la liste</router-link>
+    </div>
+    <Pagination :pagination-key="`user-guides-${route.params.id}`" v-if="guides && guides.length && !loaderStore.isLoading('guidesLoader')" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/user/stores/UserStore';
 import UserDetails from '@/user/components/UserDetails.vue';
@@ -55,6 +50,10 @@ const loadUserGuides = async () => {
 onMounted(async () => {
   await loadWithLoader(() => userStore.loadUserById(route.params.id), 'userLoader');
   await loadUserGuides();
+});
+
+onBeforeUnmount(() => {
+  userStore.clearUserData();
 });
 
 watch(currentPage, async () => {
