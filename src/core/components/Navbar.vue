@@ -41,21 +41,27 @@
           <button class="btn btn-secondary" type="submit">Search</button>
 
           <div
-            v-if="showDropdown"
+            v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
             class="mt-5 dropdown-menu show w-100 mt-2 shadow"
             ref="dropdown"
           >
-            <button v-if="noResults" class="dropdown-item disabled" type="button">No games found.</button>
+            <Loader v-if="loaderStore.isLoading('gamesLoader')" loaderKey="gamesLoader" />
 
-            <button
-              v-for="game in searchResults"
-              :key="game.id"
-              class="dropdown-item"
-              type="button"
-              @click="goToGame(game.id); closeDropdown"
-            >
-              {{ game.name }}
-            </button>
+            <template v-if="!loaderStore.isLoading('gamesLoader')">
+              <button v-if="noResults" class="dropdown-item disabled" type="button">
+                Aucun jeu trouvé.
+              </button>
+
+              <button
+                v-for="game in searchResults"
+                :key="game.id"
+                class="dropdown-item"
+                type="button"
+                @click="goToGame(game.id); closeDropdown"
+              >
+                {{ game.name }}
+              </button>
+            </template>
           </div>
         </form>
       </div>
@@ -67,12 +73,16 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGameStore } from '@/game/stores/GameStore';
+import { useLoaderStore } from '@/core/stores/LoaderStore';
+import { loadWithLoader } from '@/core/helpers/LoadingHelper';
+import Loader from '@/core/components/Loader.vue';
 
 const route = useRoute();
 const router = useRouter();
 const isUsersRoute = computed(() => route.path.startsWith('/users'));
 
 const gameStore = useGameStore();
+const loaderStore = useLoaderStore();
 
 const searchQuery = ref('');
 const showDropdown = ref(false);
@@ -92,24 +102,23 @@ const handleInput = () => {
       return;
     }
 
-    await gameStore.loadGames(searchQuery.value);
-    showDropdown.value = gameStore.searchResults.length > 0;
+    await loadWithLoader(async () => {
+      await gameStore.loadGames(searchQuery.value);
+      showDropdown.value = true;
+    }, 'gamesLoader');
   }, 1000);
 };
 
-// Function to navigate to the selected game
 const goToGame = (gameId: number) => {
   router.push(`/games/${gameId}`);
   searchQuery.value = '';
   closeDropdown();
 };
 
-// Function to close the dropdown
 const closeDropdown = () => {
   showDropdown.value = false;
 };
 
-// Function to handle search form submission
 const handleSearch = async () => {
   closeDropdown();
 
@@ -118,21 +127,20 @@ const handleSearch = async () => {
   }
 
   if (searchQuery.value.length > 0) {
-    await gameStore.loadGames(searchQuery.value);
-    showDropdown.value = gameStore.searchResults.length > 0;
+    await loadWithLoader(async () => {
+      await gameStore.loadGames(searchQuery.value);
+      showDropdown.value = true;
+    }, 'gamesLoader');
   }
 };
 
-// Function to update dropdown visibility based on search results
 const updateDropdownVisibility = () => {
   showDropdown.value = searchQuery.value.length > 0 && gameStore.searchResults.length > 0;
 };
 
-// Function to handle clicks outside the dropdown
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as Node;
   
-  // Check if the click was outside the dropdown and search form
   if (searchForm.value && dropdown.value && 
       !searchForm.value.contains(target) && 
       !dropdown.value.contains(target)) {
@@ -140,22 +148,18 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
-// Attach event listener for clicks outside
 onMounted(() => {
   window.addEventListener('click', handleClickOutside);
 });
 
-// Clean up event listener
 onBeforeUnmount(() => {
   window.removeEventListener('click', handleClickOutside);
 });
 
-// Watch for route changes and close the dropdown
 watch(route, () => {
   closeDropdown();
 });
 
-// Computed properties for search results and no results
 const searchResults = computed(() => gameStore.searchResults);
 const noResults = computed(() => gameStore.noResults);
 </script>
