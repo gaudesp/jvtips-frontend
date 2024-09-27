@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGameStore } from '@/game/stores/GameStore';
 
@@ -76,6 +76,8 @@ const gameStore = useGameStore();
 
 const searchQuery = ref('');
 const showDropdown = ref(false);
+const searchForm = ref<HTMLElement | null>(null);
+const dropdown = ref<HTMLElement | null>(null);
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const handleInput = () => {
@@ -128,11 +130,12 @@ const updateDropdownVisibility = () => {
 
 // Function to handle clicks outside the dropdown
 const handleClickOutside = (event: MouseEvent) => {
-  const dropdown = document.querySelector('.dropdown-menu') as HTMLElement;
-  const searchForm = document.querySelector('[ref="searchForm"]') as HTMLElement;
-
+  const target = event.target as Node;
+  
   // Check if the click was outside the dropdown and search form
-  if (dropdown && !dropdown.contains(event.target as Node) && searchForm && !searchForm.contains(event.target as Node)) {
+  if (searchForm.value && dropdown.value && 
+      !searchForm.value.contains(target) && 
+      !dropdown.value.contains(target)) {
     closeDropdown();
   }
 };
@@ -145,6 +148,11 @@ onMounted(() => {
 // Clean up event listener
 onBeforeUnmount(() => {
   window.removeEventListener('click', handleClickOutside);
+});
+
+// Watch for route changes and close the dropdown
+watch(route, () => {
+  closeDropdown();
 });
 
 // Computed properties for search results and no results
