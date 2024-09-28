@@ -57,9 +57,11 @@
                 v-for="game in searchResults"
                 :key="game.id"
                 class="dropdown-item"
-                type="button"
+                type="button" 
                 @click="goToGame(game.id); closeDropdown"
               >
+                <img v-if="game.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${game.cover.image_id}.png`" class="me-2" />
+                <img v-else width="50" :src="`https://placehold.co/90`" class="me-2" />
                 {{ game.name }}
               </button>
             </template>

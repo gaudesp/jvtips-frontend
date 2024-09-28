@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { searchGames } from '@/game/services/GameService';
-import type { IgbdGame, IgbdGames } from '@/game/schemas/GameSchema';
+import type { IgdbGame, IgdbGames } from '@/game/schemas/GameSchema';
 import { ref } from 'vue';
 
 export const useGameStore = defineStore('game', {
   state: () => ({
-    searchResults: ref<IgbdGame[]>([]),
+    searchResults: ref<IgdbGame[]>([]),
     noResults: ref(false),
     lastSearchQuery: ref(''),
   }),
@@ -15,7 +15,7 @@ export const useGameStore = defineStore('game', {
         this.lastSearchQuery = query;
 
         try {
-          const searchResults: IgbdGames = await searchGames(query);
+          const searchResults: IgdbGames = await searchGames(query);
           this.searchResults = searchResults.items;
           this.noResults = this.searchResults.length === 0;
         } catch (error) {
