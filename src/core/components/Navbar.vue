@@ -24,7 +24,7 @@
         </ul>
 
         <form
-          class="d-flex position-relative w-50"
+          class="d-flex position-relative w-25"
           data-bs-theme="light"
           @submit.prevent="handleSearch"
           ref="searchForm"
@@ -44,6 +44,7 @@
             v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
             class="mt-5 dropdown-menu show w-100 mt-2 shadow"
             ref="dropdown"
+            style="max-height: 200px; overflow-y: auto;"
           >
             <Loader v-if="loaderStore.isLoading('gamesLoader')" loaderKey="gamesLoader" />
 
