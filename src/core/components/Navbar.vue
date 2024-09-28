@@ -24,7 +24,7 @@
         </ul>
 
         <form
-          class="d-flex position-relative w-25"
+          class="d-flex position-relative w-50"
           data-bs-theme="light"
           @submit.prevent="handleSearch"
           ref="searchForm"
@@ -54,16 +54,16 @@
               </button>
 
               <button
-                v-for="game in searchResults"
-                :key="game.id"
+                v-for="igdbGame in searchResults"
+                :key="igdbGame.id"
                 class="dropdown-item d-flex justify-content-between align-items-center w-100"
                 type="button" 
-                @click="goToGame(game.id); closeDropdown"
+                @click="goToGame(igdbGame.id); closeDropdown"
               >
-                <img v-if="game.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${game.cover.image_id}.png`" class="me-2" />
+                <img v-if="igdbGame.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${igdbGame.cover.image_id}.png`" class="me-2" />
                 <img v-else width="50" :src="`https://placehold.co/90`" class="me-2" />
 
-                <span class="flex-grow-1 text-truncate">{{ game.name }}</span>
+                <span class="flex-grow-1 text-truncate">{{ igdbGame.name }}</span>
               </button>
             </template>
           </div>
@@ -97,9 +97,9 @@ let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 const searchResults = computed(() => gameStore.searchResults);
 const noResults = computed(() => gameStore.noResults);
 
-const loadGames = async () => {
+const loadSearchGames = async () => {
   await loadWithLoader(async () => {
-    await gameStore.loadGames(searchQuery.value);
+    await gameStore.loadSearchGames(searchQuery.value);
     showDropdown.value = true;
   }, 'gamesLoader');
 };
@@ -110,13 +110,13 @@ const handleInput = () => {
     if (searchQuery.value.length === 0) {
       showDropdown.value = false;
     } else {
-      await loadGames();
+      await loadSearchGames();
     }
   }, 1000);
 };
 
-const goToGame = (gameId: number) => {
-  router.push(`/games/${gameId}`);
+const goToGame = (igdbId: number) => {
+  router.push(`/games/${igdbId}`);
   searchQuery.value = '';
   closeDropdown();
 };
@@ -128,7 +128,7 @@ const closeDropdown = () => {
 const handleSearch = async () => {
   closeDropdown();
   if (debounceTimeout) clearTimeout(debounceTimeout);
-  if (searchQuery.value.length > 0) await loadGames();
+  if (searchQuery.value.length > 0) await loadSearchGames();
 };
 
 const updateDropdownVisibility = () => {
