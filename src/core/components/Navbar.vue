@@ -42,27 +42,28 @@
 
           <div
             v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
-            class="mt-5 dropdown-menu show w-100 mt-2 shadow"
+            class="mt-5 dropdown-menu show w-100 mt-2 shadow overflow-auto"
             ref="dropdown"
-            style="max-height: 200px; overflow-y: auto;"
+            style="max-height: 200px;"
           >
             <Loader v-if="loaderStore.isLoading('gamesLoader')" loaderKey="gamesLoader" />
 
             <template v-if="!loaderStore.isLoading('gamesLoader')">
-              <button v-if="noResults" class="dropdown-item disabled" type="button">
+              <button v-if="noResults" class="dropdown-item disabled w-100" type="button">
                 Aucun jeu trouvé.
               </button>
 
               <button
                 v-for="game in searchResults"
                 :key="game.id"
-                class="dropdown-item"
+                class="dropdown-item d-flex justify-content-between align-items-center w-100"
                 type="button" 
                 @click="goToGame(game.id); closeDropdown"
               >
                 <img v-if="game.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${game.cover.image_id}.png`" class="me-2" />
                 <img v-else width="50" :src="`https://placehold.co/90`" class="me-2" />
-                {{ game.name }}
+
+                <span class="flex-grow-1 text-truncate">{{ game.name }}</span>
               </button>
             </template>
           </div>
@@ -71,6 +72,7 @@
     </div>
   </nav>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
