@@ -11,25 +11,21 @@ export const useGameStore = defineStore('game', {
   }),
   actions: {
     async loadGames(query: string) {
-      if (query.length > 2) {
-        if (query !== this.lastSearchQuery) {
-          this.lastSearchQuery = query;
+      if (query !== this.lastSearchQuery) {
+        this.lastSearchQuery = query;
 
-          try {
-            const searchResults: IgbdGames = await searchGames(query);
-            this.searchResults = searchResults.items;
-            this.noResults = this.searchResults.length === 0;
-          } catch (error) {
-            console.error('Error loading games:', error);
-            this.noResults = true;
-          }
-        } else {
-          this.searchResults = this.searchResults;
+        try {
+          const searchResults: IgbdGames = await searchGames(query);
+          this.searchResults = searchResults.items;
           this.noResults = this.searchResults.length === 0;
+        } catch (error) {
+          console.error('Error loading games:', error);
+          this.noResults = true;
         }
       } else {
-        this.searchResults = [];
-        this.noResults = false;
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        this.searchResults = this.searchResults;
+        this.noResults = this.searchResults.length === 0;
       }
     },
     clearSearchResults() {

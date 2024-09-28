@@ -38,7 +38,7 @@
             aria-label="Rechercher un jeu"
             @focus="updateDropdownVisibility"
           />
-          <button class="btn btn-secondary" type="submit">Search</button>
+          <button class="btn btn-secondary" type="submit">Valider</button>
 
           <div
             v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
