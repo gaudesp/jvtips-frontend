@@ -79,33 +79,34 @@ import Loader from '@/core/components/Loader.vue';
 
 const route = useRoute();
 const router = useRouter();
-const isUsersRoute = computed(() => route.path.startsWith('/users'));
-
 const gameStore = useGameStore();
 const loaderStore = useLoaderStore();
 
+const isUsersRoute = computed(() => route.path.startsWith('/users'));
 const searchQuery = ref('');
 const showDropdown = ref(false);
 const searchForm = ref<HTMLElement | null>(null);
 const dropdown = ref<HTMLElement | null>(null);
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
-const handleInput = () => {
-  if (debounceTimeout) {
-    clearTimeout(debounceTimeout);
-  }
+const searchResults = computed(() => gameStore.searchResults);
+const noResults = computed(() => gameStore.noResults);
 
+const loadGames = async () => {
+  await loadWithLoader(async () => {
+    await gameStore.loadGames(searchQuery.value);
+    showDropdown.value = true;
+  }, 'gamesLoader');
+};
+
+const handleInput = () => {
+  if (debounceTimeout) clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(async () => {
     if (searchQuery.value.length === 0) {
-      gameStore.clearSearchResults();
       showDropdown.value = false;
-      return;
+    } else {
+      await loadGames();
     }
-
-    await loadWithLoader(async () => {
-      await gameStore.loadGames(searchQuery.value);
-      showDropdown.value = true;
-    }, 'gamesLoader');
   }, 1000);
 };
 
@@ -121,29 +122,17 @@ const closeDropdown = () => {
 
 const handleSearch = async () => {
   closeDropdown();
-
-  if (debounceTimeout) {
-    clearTimeout(debounceTimeout);
-  }
-
-  if (searchQuery.value.length > 0) {
-    await loadWithLoader(async () => {
-      await gameStore.loadGames(searchQuery.value);
-      showDropdown.value = true;
-    }, 'gamesLoader');
-  }
+  if (debounceTimeout) clearTimeout(debounceTimeout);
+  if (searchQuery.value.length > 0) await loadGames();
 };
 
 const updateDropdownVisibility = () => {
-  showDropdown.value = searchQuery.value.length > 0 && gameStore.searchResults.length > 0;
+  showDropdown.value = searchQuery.value.length > 0 && searchResults.value.length > 0;
 };
 
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as Node;
-  
-  if (searchForm.value && dropdown.value && 
-      !searchForm.value.contains(target) && 
-      !dropdown.value.contains(target)) {
+  if (searchForm.value && dropdown.value && !searchForm.value.contains(target) && !dropdown.value.contains(target)) {
     closeDropdown();
   }
 };
@@ -156,12 +145,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('click', handleClickOutside);
 });
 
-watch(route, () => {
-  closeDropdown();
-});
-
-const searchResults = computed(() => gameStore.searchResults);
-const noResults = computed(() => gameStore.noResults);
+watch(route, closeDropdown);
 </script>
 
 <style scoped>
