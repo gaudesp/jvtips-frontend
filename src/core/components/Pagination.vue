@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 text-center">
+  <div class="mt-4 mb-4 text-center">
     <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Pagination navigation">
       <div class="btn-group me-2" role="group" aria-label="Previous group">
         <button 

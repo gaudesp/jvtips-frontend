@@ -6,29 +6,35 @@ export interface IgdbCover {
   image_id: string;
 }
 
-export interface IgdbGame {
+export interface IgdbSearchGame {
   id: number;
   category: number;
   name: string;
   cover?: IgdbCover;
 }
 
-export interface IgdbGames {
-  items: IgdbGame[];
+export interface IgdbGame {
+  id: number;
+  name: string
+  cover: IgdbCover;
+}
+
+export interface IgdbSearchGames {
+  items: IgdbSearchGame[];
 }
 
 export interface GameBase {
   name: string;
-  igdb_id: number
 }
 
 export interface GameCreate extends GameBase {
-  name: string;
   igdb_id: number
 }
 
 export interface Game extends GameBase {
   id: number;
+  igdb_id: number;
+  igdb_image: string;
 }
 
 export interface Games extends Paginated<Game> {}

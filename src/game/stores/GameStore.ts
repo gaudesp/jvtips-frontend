@@ -1,25 +1,26 @@
 import { defineStore } from 'pinia';
 import { usePaginationStore } from '@/core/stores/PaginationStore';
-import { searchGames, fetchGameByIgdbId, fetchGameGuides } from '@/game/services/GameService';
-import type { IgdbGame, IgdbGames, Game } from '@/game/schemas/GameSchema';
+import { searchGames, fetchGameByIgdbId, fetchGameGuides, fetchGameFromIgdb } from '@/game/services/GameService';
+import type { IgdbSearchGame, IgdbSearchGames, IgdbGame, Game } from '@/game/schemas/GameSchema';
 import type { Guide, Guides } from '@/guide/schemas/GuideSchema';
 import { ref } from 'vue';
 import type { Params } from '@/core/schemas/PaginationSchema';
 
 export const useGameStore = defineStore('game', {
   state: () => ({
-    searchResults: ref<IgdbGame[]>([]),
+    searchResults: ref<IgdbSearchGame[]>([]),
     noResults: ref(false),
     lastSearchQuery: ref(''),
     game: null as Game | null,
     guides: [] as Guide[],
+    igdbGame: null as IgdbGame | null,
   }),
   actions: {
     async loadSearchGames(query: string) {
       if (query !== this.lastSearchQuery) {
         this.lastSearchQuery = query;
         try {
-          const searchResults: IgdbGames = await searchGames(query);
+          const searchResults: IgdbSearchGames = await searchGames(query);
           this.searchResults = searchResults.items;
           this.noResults = this.searchResults.length === 0;
         } catch (error) {
@@ -31,6 +32,10 @@ export const useGameStore = defineStore('game', {
         this.searchResults = this.searchResults;
         this.noResults = this.searchResults.length === 0;
       }
+    },
+    async loadGameFromIgdb(igdbId: string | string[]) {
+      const igdbGame: IgdbGame = await fetchGameFromIgdb(igdbId);
+      this.igdbGame = igdbGame;
     },
     async loadGameByIgdbId(igdbId: string | string[]) {
       const game: Game = await fetchGameByIgdbId(igdbId);
@@ -58,6 +63,7 @@ export const useGameStore = defineStore('game', {
     clearGameData() {
       this.game = null;
       this.guides = [];
+      this.igdbGame = null;
     },
   },
 });

@@ -1,25 +1,32 @@
 <template>
   <div class="mt-4 container">
-    <div class="card card-body mb-4">
-      <Loader v-if="loaderStore.isLoading('gameLoader')" loaderKey="gameLoader" />
-      <template v-if="game">
+    <Loader v-if="loaderStore.isLoading('gameLoader')" loaderKey="gameLoader" />
+    <template v-if="game">
+      <div class="card card-body mb-4 p-0" style="min-height: 114px;">
         <div v-if="!loaderStore.isLoading('gameLoader')">
-          <GameDetails :game="game" />
+          <GameDetails :game="game" :igdb_image="game.igdb_image" />
         </div>
-      </template>
-      <template v-else>
-        Il n'y a pas de guide pour ce jeu.
-      </template>
-    </div>
-    <div class="card card-body" v-if="game">
-      <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
-      <template v-if="guides && guides.length">
-        <div v-if="!loaderStore.isLoading('guidesLoader')">
-          <GuideList :guides="guides" />
+      </div>
+      <div class="card card-body" v-if="game" style="min-height: 298px;">
+        <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
+        <template v-if="guides && guides.length">
+          <div v-if="!loaderStore.isLoading('guidesLoader')">
+            <GuideList :guides="guides" />
+          </div>
+        </template>
+      </div>
+      <Pagination :pagination-key="`game-guides-${route.params.id}`" v-if="guides && guides.length" />
+    </template>
+    <template v-else>
+      <Loader v-if="loaderStore.isLoading('igdbLoader')" loaderKey="igdbLoader" />
+      <div v-if="igdbGame">
+        <div class="card card-body mb-4 p-0" style="min-height: 114px;">
+          <template v-if="!loaderStore.isLoading('igdbLoader')">
+            <GameDetails :game="igdbGame" :igdb_image="igdbGame.cover?.image_id" />
+          </template>
         </div>
-      </template>
-    </div>
-    <Pagination :pagination-key="`game-guides-${route.params.id}`" v-if="guides && guides.length && !loaderStore.isLoading('guidesLoader')" />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -42,17 +49,24 @@ const loaderStore = useLoaderStore();
 const paginationStore = usePaginationStore();
 
 const game = computed(() => gameStore.game);
+const igdbGame = computed(() => gameStore.igdbGame);
 const guides = computed(() => gameStore.guides);
 const currentPage = computed(() => paginationStore.getPagination(`game-guides-${route.params.id}`).currentPage);
 const pageSize = computed(() => paginationStore.getPagination(`game-guides-${route.params.id}`).pageSize);
 
 const loadGameGuides = async () => {
-  await loadWithLoader(() => gameStore.loadGameGuides(route.params.id, { page: currentPage.value, size: pageSize.value }), 'guidesLoader');
+  if (game) {
+    await loadWithLoader(() => gameStore.loadGameGuides(route.params.id, { page: currentPage.value, size: pageSize.value }), 'guidesLoader');
+  }
 };
 
 const loadGameData = async () => {
-  await loadWithLoader(() => gameStore.loadGameByIgdbId(route.params.id), 'gameLoader');
-  await loadGameGuides();
+  try {
+    await loadWithLoader(() => gameStore.loadGameByIgdbId(route.params.id), 'gameLoader');
+    await loadGameGuides();
+  } catch {
+    await loadWithLoader(() => gameStore.loadGameFromIgdb(route.params.id), 'igdbLoader');
+  }
 };
 
 onMounted(async () => {
