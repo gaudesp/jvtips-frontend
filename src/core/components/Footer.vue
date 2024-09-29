@@ -1,5 +1,5 @@
 <template>
-  <footer class="py-5 bg-light border-top">
-    <div class="container"><p class="m-0 text-center text-black">Copyright © JVTips 2024</p></div>
+  <footer class="bg-primary py-5 border-top">
+    <div class="container"><p class="m-0 text-center text-light">Copyright © JVTips 2024</p></div>
   </footer>
 </template>

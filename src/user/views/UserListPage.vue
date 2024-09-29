@@ -1,17 +1,15 @@
 <template>
   <div class="mt-4 container">
-    <div class="card">
-      <div class="card-body">
-        <Loader v-if="loaderStore.isLoading('usersLoader')" loaderKey="usersLoader" />
-        <template v-if="!loaderStore.isLoading('usersLoader')">
-          <template v-if="users && users.length">
-            <UserList :users="users" />
-          </template>
-          <template v-else>
-            <span>Aucun utilisateur trouvé.</span>
-          </template>
+    <div class="card card-body">
+      <Loader v-if="loaderStore.isLoading('usersLoader')" loaderKey="usersLoader" />
+      <template v-if="!loaderStore.isLoading('usersLoader')">
+        <template v-if="users && users.length">
+          <UserList :users="users" />
         </template>
-      </div>
+        <template v-else>
+          <span>Aucun utilisateur trouvé.</span>
+        </template>
+      </template>
     </div>
     <Pagination :pagination-key="'users'" v-if="users && users.length && !loaderStore.isLoading('usersLoader')" />
   </div>
