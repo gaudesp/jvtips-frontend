@@ -2,12 +2,12 @@
   <div class="mt-4 container">
     <Loader v-if="loaderStore.isLoading('gameLoader')" loaderKey="gameLoader" />
     <template v-if="game">
-      <div class="card card-body mb-4 p-0" style="min-height: 114px;">
+      <div class="card card-body mb-4 p-0">
         <div v-if="!loaderStore.isLoading('gameLoader')">
           <GameDetails :game="game" :igdb_image="game.igdb_image" />
         </div>
       </div>
-      <div class="card card-body" v-if="game" style="min-height: 298px;">
+      <div class="card card-body" v-if="game">
         <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
         <template v-if="guides && guides.length">
           <div v-if="!loaderStore.isLoading('guidesLoader')">
@@ -19,11 +19,12 @@
     </template>
     <template v-else>
       <Loader v-if="loaderStore.isLoading('igdbLoader')" loaderKey="igdbLoader" />
-      <div v-if="igdbGame">
-        <div class="card card-body mb-4 p-0" style="min-height: 114px;">
-          <template v-if="!loaderStore.isLoading('igdbLoader')">
-            <GameDetails :game="igdbGame" :igdb_image="igdbGame.cover?.image_id" />
-          </template>
+      <div v-if="igdbGame && !loaderStore.isLoading('igdbLoader')">
+        <div class="card card-body mb-4 p-0">
+          <GameDetails :game="igdbGame" :igdb_image="igdbGame.cover?.image_id" />
+        </div>
+        <div class="card card-body">
+          Aucun guide n'a été créé pour ce jeu.
         </div>
       </div>
     </template>
