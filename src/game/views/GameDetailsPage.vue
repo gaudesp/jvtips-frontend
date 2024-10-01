@@ -7,15 +7,13 @@
           <GameDetails :game="game" :igdb_image="game.igdb_image" />
         </div>
       </div>
-      <div class="card card-body" v-if="game">
-        <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
-        <template v-if="guides && guides.length">
-          <div v-if="!loaderStore.isLoading('guidesLoader')">
-            <GuideList :guides="guides" />
-          </div>
-        </template>
+      <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
+      <div v-if="!loaderStore.isLoading('guidesLoader')">
+        <div class="card card-body" v-if="game && guides && guides.length">
+          <GuideList :guides="guides" />
+        </div>
+        <Pagination :pagination-key="`game-guides-${route.params.id}`" v-if="guides && guides.length" />
       </div>
-      <Pagination :pagination-key="`game-guides-${route.params.id}`" v-if="guides && guides.length" />
     </template>
     <template v-else>
       <Loader v-if="loaderStore.isLoading('igdbLoader')" loaderKey="igdbLoader" />
