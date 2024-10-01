@@ -5,6 +5,7 @@ import router from '@/router';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
+    lastRoute: '/',
   }),
   getters: {
     isAuthenticated(state): boolean {
@@ -12,22 +13,27 @@ export const useAuthStore = defineStore('auth', {
     },
   },
   actions: {
+    setLastRoute(route: string) {
+      this.lastRoute = route;
+    },
     async signIn(email: string, password: string) {
       const response = await authenticate(email, password);
       this.token = response.access_token;
-  
+
       if (this.token) {
         localStorage.setItem('token', this.token);
       }
-  
-      const redirectPath = router.currentRoute.value.query.redirect || '/';
-      router.push(redirectPath as string);
+
+      const redirectPath = this.lastRoute || '/';
+      router.push(redirectPath);
     },
 
     signOut() {
       this.token = null;
       localStorage.removeItem('token');
-      router.push('/sign-in');
+
+      const redirectPath = this.lastRoute || '/';
+      router.push(redirectPath);
     },
 
     getToken() {

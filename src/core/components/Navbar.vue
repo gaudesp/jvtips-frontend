@@ -83,7 +83,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGameStore } from '@/game/stores/GameStore';
 import { useLoaderStore } from '@/core/stores/LoaderStore';
-import { useAuthStore } from '@/auth/stores/AuthStore'; // Importation du AuthStore
+import { useAuthStore } from '@/auth/stores/AuthStore';
 import { loadWithLoader } from '@/core/helpers/LoadingHelper';
 import Loader from '@/core/components/Loader.vue';
 
@@ -91,9 +91,9 @@ const route = useRoute();
 const router = useRouter();
 const gameStore = useGameStore();
 const loaderStore = useLoaderStore();
-const authStore = useAuthStore(); // Instanciation du AuthStore
+const authStore = useAuthStore();
 
-const isAuthenticated = computed(() => !!authStore.getToken()); // Vérifie si l'utilisateur est connecté
+const isAuthenticated = computed(() => !!authStore.getToken());
 const isUsersRoute = computed(() => route.path.startsWith('/users'));
 const searchQuery = ref('');
 const showDropdown = ref(false);
@@ -150,7 +150,7 @@ const handleClickOutside = (event: MouseEvent) => {
 };
 
 const handleSignOut = () => {
-  authStore.signOut(); // Déconnexion de l'utilisateur
+  authStore.signOut();
 };
 
 onMounted(() => {

@@ -16,7 +16,7 @@ const routes = [
     path: '/users',
     name: 'UserList',
     component: UserListPage,
-    //meta: { requiresAuth: true },
+   //meta: { requiresAuth: true },
   },
   {
     path: '/users/:id',
@@ -43,6 +43,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
+
+  if (to.name === 'SignIn') {
+    if (from.name) {
+      authStore.setLastRoute(from.fullPath);
+    }
+  }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({

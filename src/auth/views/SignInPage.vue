@@ -1,7 +1,8 @@
 <template>
   <div class="container mt-5">
-    <h3 class="text-center">Sign In</h3>
-    <SignInForm />
+    <div class="card card-body w-50 mx-auto">
+      <SignInForm />
+    </div>
   </div>
 </template>
 
