@@ -24,7 +24,7 @@
         </ul>
 
         <form
-          class="d-flex position-relative w-50"
+          class="d-flex position-relative w-40 me-4"
           data-bs-theme="light"
           @submit.prevent="handleSearch"
           ref="searchForm"
@@ -68,17 +68,22 @@
             </template>
           </div>
         </form>
+
+        <div class="d-flex">
+          <button v-if="isAuthenticated" @click="handleSignOut" class="btn btn-outline-light">Sign Out</button>
+          <router-link v-else to="/sign-in" class="btn btn-outline-light">Sign In</router-link>
+        </div>
       </div>
     </div>
   </nav>
 </template>
-
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGameStore } from '@/game/stores/GameStore';
 import { useLoaderStore } from '@/core/stores/LoaderStore';
+import { useAuthStore } from '@/auth/stores/AuthStore'; // Importation du AuthStore
 import { loadWithLoader } from '@/core/helpers/LoadingHelper';
 import Loader from '@/core/components/Loader.vue';
 
@@ -86,7 +91,9 @@ const route = useRoute();
 const router = useRouter();
 const gameStore = useGameStore();
 const loaderStore = useLoaderStore();
+const authStore = useAuthStore(); // Instanciation du AuthStore
 
+const isAuthenticated = computed(() => !!authStore.getToken()); // Vérifie si l'utilisateur est connecté
 const isUsersRoute = computed(() => route.path.startsWith('/users'));
 const searchQuery = ref('');
 const showDropdown = ref(false);
@@ -142,6 +149,10 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+const handleSignOut = () => {
+  authStore.signOut(); // Déconnexion de l'utilisateur
+};
+
 onMounted(() => {
   window.addEventListener('click', handleClickOutside);
 });
@@ -160,5 +171,13 @@ watch(route, closeDropdown);
 
 .navbar .nav-link {
   padding: 1rem;
+}
+
+.form-control {
+  width: 70%;
+}
+
+.btn-outline-light {
+  margin-left: 10px;
 }
 </style>
