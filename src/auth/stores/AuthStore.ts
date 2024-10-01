@@ -31,9 +31,6 @@ export const useAuthStore = defineStore('auth', {
     signOut() {
       this.token = null;
       localStorage.removeItem('token');
-
-      const redirectPath = this.lastRoute || '/';
-      router.push(redirectPath);
     },
 
     getToken() {
