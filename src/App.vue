@@ -2,6 +2,7 @@
   <div id="app">
     <Navbar />
     <main class="flex-grow bg-secondary">
+      <Alert />
       <router-view />
     </main>
     <Footer />
@@ -11,6 +12,7 @@
 <script setup lang="ts">
 import Navbar from '@/core/components/Navbar.vue';
 import Footer from '@/core/components/Footer.vue';
+import Alert from '@/core/components/Alert.vue';
 </script>
 
 <style>
