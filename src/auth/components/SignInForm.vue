@@ -30,7 +30,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthStore } from '@/auth/stores/AuthStore';
-import { useRouter } from 'vue-router';
 import { useAlertStore } from '@/core/stores/AlertStore';
 
 const authStore = useAuthStore();
