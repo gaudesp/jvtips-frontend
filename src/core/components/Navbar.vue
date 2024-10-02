@@ -122,7 +122,7 @@ const handleInput = () => {
     } else {
       await loadSearchGames();
     }
-  }, 500);
+  }, 1000);
 };
 
 const goToGame = (igdbId: number) => {
