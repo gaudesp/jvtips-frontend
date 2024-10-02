@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { authenticate } from '@/auth/services/AuthService';
 import router from '@/router';
+import { useAlertStore } from '@/core/stores/AlertStore';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -17,15 +18,19 @@ export const useAuthStore = defineStore('auth', {
       this.lastRoute = route;
     },
     async signIn(email: string, password: string) {
-      const response = await authenticate(email, password);
-      this.token = response.access_token;
-
-      if (this.token) {
-        localStorage.setItem('token', this.token);
+      const alertStore = useAlertStore();
+      try {
+        const response = await authenticate(email, password);
+        this.token = response.access_token;
+        if (this.token) {
+          localStorage.setItem('token', this.token);
+        }
+        const redirectPath = this.lastRoute || '/';
+        router.push(redirectPath);
+        alertStore.addAlert('Connexion réussie!', 'success');
+      } catch (error) {
+        alertStore.addAlert('Identifiants incorrects.', 'warning');
       }
-
-      const redirectPath = this.lastRoute || '/';
-      router.push(redirectPath);
     },
 
     signOut() {
