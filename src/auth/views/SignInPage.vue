@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <div class="card card-body w-50 mx-auto">
+    <div class="card card-body w-25 mx-auto">
       <SignInForm />
     </div>
   </div>

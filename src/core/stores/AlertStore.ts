@@ -8,7 +8,7 @@ export const useAlertStore = defineStore('alert', {
   actions: {
     addAlert(message: string, type: 'success' | 'danger' | 'info' | 'warning') {
       const alert = { id: this.nextId++, message, type };
-      this.alerts.push(alert);
+      this.alerts = [alert];
 
       setTimeout(() => {
         this.removeAlert(alert.id);

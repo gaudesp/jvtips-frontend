@@ -1,8 +1,6 @@
 <template>
-  <h3 class="text-center">Connexion</h3>
   <form @submit.prevent="handleSignIn">
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
+    <div class="form-floating mb-3">
       <input
         type="email"
         id="email"
@@ -11,9 +9,9 @@
         required
         placeholder="Entrez votre email"
       />
+      <label for="email" class="form-label">Email</label>
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Mot de passe</label>
+    <div class="form-floating mb-3">
       <input
         type="password"
         id="password"
@@ -22,6 +20,7 @@
         required
         placeholder="Entrez votre mot de passe"
       />
+      <label for="password" class="form-label">Mot de passe</label>
     </div>
     <button type="submit" class="btn btn-primary w-100">Se connecter</button>
   </form>
