@@ -1,8 +1,6 @@
 <template>
-  <h3 class="text-center">Connexion</h3>
   <form @submit.prevent="handleSignIn">
-    <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
+    <div class="form-floating mb-3">
       <input
         type="email"
         id="email"
@@ -10,10 +8,11 @@
         class="form-control"
         required
         placeholder="Entrez votre email"
+        :disabled="loaderStore.isLoading('signinLoader')"
       />
+      <label for="email" class="form-label">Email</label>
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Mot de passe</label>
+    <div class="form-floating mb-3">
       <input
         type="password"
         id="password"
@@ -21,30 +20,30 @@
         class="form-control"
         required
         placeholder="Entrez votre mot de passe"
+        :disabled="loaderStore.isLoading('signinLoader')"
       />
+      <label for="password" class="form-label">Mot de passe</label>
     </div>
-    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+    <button type="submit" class="btn btn-primary w-100" :disabled="loaderStore.isLoading('signinLoader')">
+      <span v-if="loaderStore.isLoading('signinLoader')" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span v-else>Se connecter</span>
+    </button>
   </form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthStore } from '@/auth/stores/AuthStore';
-import { useAlertStore } from '@/core/stores/AlertStore';
+import { loadWithLoader } from '@/core/helpers/LoadingHelper';
+import { useLoaderStore } from '@/core/stores/LoaderStore';
 
 const authStore = useAuthStore();
-const alertStore = useAlertStore();
+const loaderStore = useLoaderStore();
 
 const email = ref('');
 const password = ref('');
 
 const handleSignIn = async () => {
-  try {
-    await authStore.signIn(email.value, password.value);
-    alertStore.addAlert('Connexion réussie!', 'success');
-  } catch (error) {
-    alertStore.addAlert('Identifiants incorrects.', 'warning');
-  }
+  await loadWithLoader(() => authStore.signIn(email.value, password.value), 'signinLoader');
 };
 </script>
-

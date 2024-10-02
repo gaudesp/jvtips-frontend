@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
 import { authenticate } from '@/auth/services/AuthService';
 import router from '@/router';
+import { useAlertStore } from '@/core/stores/AlertStore';
+import { useCacheStore } from '@/core/stores/CacheStore';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
-    lastRoute: '/',
+    lastRoute: '/' as string,
   }),
   getters: {
     isAuthenticated(state): boolean {
@@ -16,16 +18,28 @@ export const useAuthStore = defineStore('auth', {
     setLastRoute(route: string) {
       this.lastRoute = route;
     },
+
     async signIn(email: string, password: string) {
-      const response = await authenticate(email, password);
-      this.token = response.access_token;
+      const alertStore = useAlertStore();
+      try {
+        if (!this.token && !localStorage.getItem('token')) {
+          const response = await authenticate(email, password);
+          this.token = response.access_token;
 
-      if (this.token) {
-        localStorage.setItem('token', this.token);
+          if (this.token) {
+            localStorage.setItem('token', this.token);
+          }
+        } else {
+          this.token = this.getToken();
+        }
+
+        const redirectPath = this.lastRoute || '/';
+        router.push(redirectPath);
+
+        alertStore.addAlert('Connexion réussie!', 'success');
+      } catch (error) {
+        alertStore.addAlert('Identifiants incorrects.', 'warning');
       }
-
-      const redirectPath = this.lastRoute || '/';
-      router.push(redirectPath);
     },
 
     signOut() {

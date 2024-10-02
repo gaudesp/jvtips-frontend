@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex align-items-center">
     <Loader v-if="!imageLoaded" :loaderKey="imageLoaderKey" class="rounded-start p-4" :style="{ width: '200px', height: '112px' }" />
-
     <img
       v-if="igdb_image"
       width="200"

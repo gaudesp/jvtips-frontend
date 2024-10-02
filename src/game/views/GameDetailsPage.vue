@@ -9,7 +9,7 @@
       </div>
       <Loader v-if="loaderStore.isLoading('guidesLoader')" loaderKey="guidesLoader" />
       <div v-if="!loaderStore.isLoading('guidesLoader')">
-        <div class="card card-body" v-if="game && guides && guides.length">
+        <div class="card card-body" v-if="guides && guides.length">
           <GuideList :guides="guides" />
         </div>
         <Pagination :pagination-key="`game-guides-${route.params.id}`" v-if="guides && guides.length" />
@@ -54,9 +54,7 @@ const currentPage = computed(() => paginationStore.getPagination(`game-guides-${
 const pageSize = computed(() => paginationStore.getPagination(`game-guides-${route.params.id}`).pageSize);
 
 const loadGameGuides = async () => {
-  if (game) {
-    await loadWithLoader(() => gameStore.loadGameGuides(route.params.id, { page: currentPage.value, size: pageSize.value }), 'guidesLoader');
-  }
+  await loadWithLoader(() => gameStore.loadGameGuides(route.params.id, { page: currentPage.value, size: pageSize.value }), 'guidesLoader');
 };
 
 const loadGameData = async () => {
@@ -73,11 +71,11 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  gameStore.clearGameData();
+  gameStore.clearCache();
 });
 
 watch(() => route.params.id, async () => {
-  gameStore.clearGameData();
+  gameStore.clearCache();
   await loadGameData();
 });
 
