@@ -71,11 +71,11 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  gameStore.clearGameData();
+  gameStore.clearCache();
 });
 
 watch(() => route.params.id, async () => {
-  gameStore.clearGameData();
+  gameStore.clearCache();
   await loadGameData();
 });
 

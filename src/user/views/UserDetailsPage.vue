@@ -53,10 +53,11 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  userStore.clearUserData();
+  userStore.clearCache();
 });
 
 watch(currentPage, async () => {
+  userStore.clearCache();
   await loadUserGuides();
 });
 </script>
