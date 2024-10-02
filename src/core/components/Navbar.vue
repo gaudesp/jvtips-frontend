@@ -2,19 +2,11 @@
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container">
       <router-link to="/" class="navbar-brand">JVTips</router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarColor01"
-        aria-controls="navbarColor01"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mx-auto">
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <router-link to="/" class="nav-link" active-class="active">Accueil</router-link>
           </li>
@@ -22,57 +14,66 @@
             <router-link to="/users" class="nav-link" :class="{ active: isUsersRoute }">Membres</router-link>
           </li>
         </ul>
+        <ul class="navbar-nav ms-md-auto">
+          <li class="nav-item">
+            <form
+              class="d-flex position-relative me-2"
+              style="width: 20rem; margin-top: 11px;"
+              data-bs-theme="light"
+              @submit.prevent="handleSearch"
+              ref="searchForm"
+            >
+              <input
+                v-model="searchQuery"
+                @input="handleInput"
+                class="form-control"
+                type="search"
+                placeholder="Rechercher un jeu"
+                aria-label="Rechercher un jeu"
+                @focus="updateDropdownVisibility"
+              />
 
-        <form
-          class="d-flex position-relative w-40 me-4"
-          data-bs-theme="light"
-          @submit.prevent="handleSearch"
-          ref="searchForm"
-        >
-          <input
-            v-model="searchQuery"
-            @input="handleInput"
-            class="form-control me-2"
-            type="search"
-            placeholder="Rechercher un jeu"
-            aria-label="Rechercher un jeu"
-            @focus="updateDropdownVisibility"
-          />
-          <button class="btn btn-secondary" type="submit">Valider</button>
-
-          <div
-            v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
-            class="mt-5 dropdown-menu show w-100 mt-2 shadow overflow-auto"
-            ref="dropdown"
-            style="max-height: 200px;"
-          >
-            <Loader v-if="loaderStore.isLoading('gamesLoader')" loaderKey="gamesLoader" />
-
-            <template v-if="!loaderStore.isLoading('gamesLoader')">
-              <button v-if="noResults" class="dropdown-item disabled w-100" type="button">
-                Aucun jeu trouvé.
-              </button>
-
-              <button
-                v-for="igdbGame in searchResults"
-                :key="igdbGame.id"
-                class="dropdown-item d-flex justify-content-between align-items-center w-100"
-                type="button" 
-                @click="goToGame(igdbGame.id); closeDropdown"
+              <div
+                v-if="showDropdown || loaderStore.isLoading('gamesLoader')"
+                class="mt-5 dropdown-menu show w-100 shadow overflow-auto"
+                ref="dropdown"
+                style="max-height: 200px;"
               >
-                <img v-if="igdbGame.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${igdbGame.cover.image_id}.png`" class="me-2" />
-                <img v-else width="50" :src="`https://placehold.co/90`" class="me-2" />
+                <Loader v-if="loaderStore.isLoading('gamesLoader')" loaderKey="gamesLoader" />
 
-                <span class="flex-grow-1 text-truncate">{{ igdbGame.name }}</span>
-              </button>
-            </template>
-          </div>
-        </form>
+                <template v-if="!loaderStore.isLoading('gamesLoader')">
+                  <button v-if="noResults" class="dropdown-item disabled w-100" type="button">
+                    Aucun jeu trouvé.
+                  </button>
 
-        <div class="d-flex">
-          <button v-if="isAuthenticated" @click="handleSignOut" class="btn btn-outline-light">Sign Out</button>
-          <router-link v-else to="/sign-in" class="btn btn-outline-light">Sign In</router-link>
-        </div>
+                  <button
+                    v-for="igdbGame in searchResults"
+                    :key="igdbGame.id"
+                    class="dropdown-item d-flex justify-content-between align-items-center w-100"
+                    type="button" 
+                    @click="goToGame(igdbGame.id); closeDropdown"
+                  >
+                    <img v-if="igdbGame.cover" width="50" :src="`https://images.igdb.com/igdb/image/upload/t_thumb/${igdbGame.cover.image_id}.png`" class="me-2" />
+                    <img v-else width="50" :src="`https://placehold.co/90`" class="me-2" />
+
+                    <span class="flex-grow-1 text-truncate">{{ igdbGame.name }}</span>
+                  </button>
+                </template>
+              </div>
+            </form>
+          </li>
+          <li class="nav-item dropdown" data-bs-theme="light">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="version-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme">
+              <span><i class="bi bi-person-circle" style="font-size: 1.2rem;"></i></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a v-if="isAuthenticated" @click="handleSignOut" class="dropdown-item d-flex align-items-center justify-content-between" role="button" aria-current="true">Se déconnecter</a>
+                <router-link v-else to="/sign-in" class="dropdown-item d-flex align-items-center justify-content-between" role="button" aria-current="true">Se connecter</router-link>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -121,7 +122,7 @@ const handleInput = () => {
     } else {
       await loadSearchGames();
     }
-  }, 1000);
+  }, 500);
 };
 
 const goToGame = (igdbId: number) => {
@@ -174,13 +175,5 @@ watch(route, closeDropdown);
 
 .navbar .nav-link {
   padding: 1rem;
-}
-
-.form-control {
-  width: 70%;
-}
-
-.btn-outline-light {
-  margin-left: 10px;
 }
 </style>

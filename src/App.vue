@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar />
-    <main class="flex-grow bg-secondary">
+    <main class="flex-grow">
       <Alert />
       <router-view />
     </main>
