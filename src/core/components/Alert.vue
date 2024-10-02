@@ -34,7 +34,7 @@ const removeAlert = (id: number) => {
 <style scoped>
 .fade-alert-enter-active,
 .fade-alert-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .fade-alert-enter-from,
 .fade-alert-leave-to {
