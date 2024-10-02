@@ -42,18 +42,20 @@ export const useGameStore = defineStore('game', {
       this.game = game;
     },
     async loadGameGuides(gameId: string | string[], params: Params) {
-      const paginationStore = usePaginationStore();
-      const paginationKey = `game-guides-${gameId}`;
+      if (this.game) {
+        const paginationStore = usePaginationStore();
+        const paginationKey = `game-guides-${gameId}`;
 
-      const guides: Guides = await fetchGameGuides(gameId, params);
-      this.guides = guides.items;
+        const guides: Guides = await fetchGameGuides(gameId, params);
+        this.guides = guides.items;
 
-      paginationStore.setPagination(
-        paginationKey,
-        guides.current_page,
-        guides.total_pages,
-        params.size || paginationStore.getPagination(paginationKey).pageSize
-      );
+        paginationStore.setPagination(
+          paginationKey,
+          guides.current_page,
+          guides.total_pages,
+          params.size || paginationStore.getPagination(paginationKey).pageSize
+        );
+      }
     },
     clearSearchResults() {
       this.searchResults = [];
