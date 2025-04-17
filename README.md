@@ -1,43 +1,39 @@
-# JVTips Frontend
+# JVTips Frontend 🎮🌐
+JVTips Frontend est une application web développée avec **Vue 3** et **Vite 5**, servant d’interface utilisateur pour interagir avec l’API de [JVTips Backend](https://github.com/gaudesp/jvtips-backend), permettant de partager des astuces sur des jeux vidéo.
 
-WEB APP project using Vue 3 and Vite 5.
+## ⚙️ Prérequis
+- **Node.js** (*version* : `>=18.x`)
+- **npm** (*version* : `>=9.x`)
+- Un **terminal** compatible **Bash** (*sur WSL ou Unix-like*)
+- Le fichier **`.env`** de configuration (*à récupérer sur le Drive*)
 
-## Requirements
-- [Node](https://nodejs.org/fr/download/package-manager)
+## 🚀 Setup
+1. **Clonez le repo** :  
+   ```bash
+   git clone git@github.com:gaudesp/jvtips-frontend.git
+   cd jvtips-frontend
+   ```
 
-## Project Setup
+2. **Installez les dépendances** :
+   ```bash
+   npm install
+   ```
 
-Install dependencies :
-```sh
-npm install
-```
+3. **Lancez l'application en développement** :
+   ```bash
+   npm run dev
+   ```
 
-Running application :
-```sh
-npm run dev
-```
+4. **Accédez à l'application localement** :
+   - APP accessible via : [http://localhost:5173](http://localhost:5173)
 
-## Project Structure
+## 📦 Dépendances
+- **`vue`** : Framework JavaScript principal utilisé pour construire l’interface.
+- **`vite`** : Outil de build et serveur de développement ultra-rapide.
+- **`vue-router`** : Gestion des routes de l’application.
+- **`pinia`** : Gestionnaire d’état moderne pour Vue.
+- **`axios`** : Requêtes HTTP vers l’API backend.
+- **`bootstrap`** & **`bootstrap-icons`** : Composants et styles prêts à l’emploi.
 
-```ruby
-jvtips-frontend
-├── src
-│   ├── core
-│   │   ├── components
-│   │   ├── services
-│   │   ├── views
-│   ├── module
-│   │   ├── components
-│   │   ├── models
-│   │   ├── store
-│   │   ├── services
-│   │   ├── views
-│   ├── assets
-│   │   ├── images
-│   │   ├── styles
-│   ├── App.vue
-│   ├── main.ts
-│   ├── router.ts
-│   ├── store.ts
-├── index.html
-```
+## Contribution 🤝
+Lead developer : [@gaudesp](https://github.com/gaudesp)
