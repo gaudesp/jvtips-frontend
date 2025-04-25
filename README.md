@@ -1,5 +1,5 @@
 # JVTips Frontend 🎮🌐
-JVTips Frontend est une application web développée avec **Vue 3** et **Vite 5**, servant d’interface utilisateur pour interagir avec l’API de [JVTips Backend](https://github.com/gaudesp/jvtips-backend), permettant de partager des astuces sur des jeux vidéo.
+**JVTips Frontend** est une application web développée en **Vue 3** avec **Vite 5**, servant d’interface utilisateur pour interagir avec l’API de [JVTips Backend](https://github.com/gaudesp/jvtips-backend), permettant de partager et consulter des astuces sur des jeux vidéo.
 
 ## ⚙️ Prérequis
 - **Node.js** (*version* : `22.9.0`)
@@ -35,5 +35,5 @@ npm run dev
 - `axios` : Requêtes HTTP vers l’API backend.
 - `bootstrap` & `bootstrap-icons` : Composants et styles prêts à l’emploi.
 
-## Contribution 🤝
+## 🤝 Contribution
 Lead developer : [@gaudesp](https://github.com/gaudesp)
